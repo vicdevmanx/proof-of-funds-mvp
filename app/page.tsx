@@ -173,7 +173,7 @@ export default function CryptoProofOfFunds() {
       setIsPortfolioLoading(true)
       let myVariables: { addresses: string[], first: number } = {
         addresses: [
-          '0x396343362be2A4dA1cE0C1C210945346fb82Aa49',
+         address,
         ],
         first: 10
       }
@@ -604,10 +604,10 @@ export default function CryptoProofOfFunds() {
       </main>
 
       {/* Footer */}
-      <footer className="relative border-t border-glass mt-16 sm:mt-20 backdrop-blur-xl bg-glass">
+      <footer className={`relative border-t border-glass mt-16  sm:mt-20 backdrop-blur-xl bg-glass ${step == 1 ? "mb-0" : "mb-16  sm:mb-20"}`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8 text-center text-xs sm:text-sm text-muted-foreground">
           <p>Built by Victor Adeiza (vicdevman) • <a
-            href="https://www.linkedin.com/in/vicdevmanx"
+            href="https://www.linkedin.com/in/victor-adeiza-vicdevman-043902257"
             target="_blank"
             rel="noopener noreferrer"
             className="text-blue-500 hover:underline font-bold"
