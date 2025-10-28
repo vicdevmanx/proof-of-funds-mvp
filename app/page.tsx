@@ -223,7 +223,7 @@ export default function CryptoProofOfFunds() {
   // generate proof-of-funds PDF
   const generatePDF = async () => {
     setGenerating(true);
-    await new Promise(resolve => setTimeout(resolve, 500));
+    await new Promise(resolve => setTimeout(resolve, 200));
     setGenerating(false);
     setStep(3);
   };
@@ -573,20 +573,24 @@ export default function CryptoProofOfFunds() {
               </div>
 
               {/* Additional Options */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+              <div className="flex items-center gap-2">
                 <button
                   onClick={() => { setStep(2); setBalances([]); }}
-                  className="py-3 rounded-xl border border-glass hover-glass transition-all text-theme text-sm sm:text-base"
-                >
+                  className="w-full py-3 rounded-2xl bg-gradient-primary hover:opacity-90 font-semibold text-base sm:text-lg transition-all hover:scale-[1.01] disabled:opacity-50 disabled:cursor-not-allowed shadow-primary text-white flex items-center justify-center gap-2">
+                  
                   Generate Another
                 </button>
-                {/* <button className="py-3 rounded-xl border border-glass hover-glass transition-all text-theme text-sm sm:text-base">
-                  Share via Email
-                </button> */}
+                <button
+                onClick={() => disconnect()}
+                className="py-3 px-4 rounded-xl bg-red-400 text-white font-semibold hover:scale-105 transition-all shadow-lg flex items-center gap-2"
+              >
+                <LogOut className="w-4 h-4" />
+                <span>Disconnect </span>
+              </button>
               </div>
 
               {/* Upgrade CTA */}
-              <div className="mt-6 sm:mt-8 p-4 sm:p-6 rounded-2xl bg-gradient-to-r from-amber-500/20 to-orange-500/20 border border-amber-500/30">
+              {/* <div className="mt-6 sm:mt-8 p-4 sm:p-6 rounded-2xl bg-gradient-to-r from-amber-500/20 to-orange-500/20 border border-amber-500/30">
                 <div className="flex items-center justify-center gap-2 mb-2">
                   <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-amber-400" />
                   <h4 className="font-semibold text-amber-400 text-sm sm:text-base">Upgrade to Pro</h4>
@@ -597,7 +601,7 @@ export default function CryptoProofOfFunds() {
                 <button className="px-4 sm:px-6 py-2 rounded-lg bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 font-semibold text-xs sm:text-sm transition-all text-white">
                   Upgrade Now - $9.99/mo
                 </button>
-              </div>
+              </div> */}
             </div>
           </div>
         )}
