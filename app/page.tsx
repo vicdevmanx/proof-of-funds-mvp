@@ -351,7 +351,16 @@ export default function CryptoProofOfFunds() {
             </div>
 
             <div className="flex justify-center">
-              <ConnectButton />
+            <ConnectButton.Custom>
+          {({ openConnectModal, account, chain }) => (
+            <button
+              onClick={openConnectModal}
+              className="px-8 py-4 rounded-full bg-gradient-to-r from-indigo-500 to-purple-500 text-white font-semibold hover:scale-105 transition-all shadow-lg"
+            >
+              {account ? "Connected ✅" : "Connect Wallet"}
+            </button>
+          )}
+        </ConnectButton.Custom>
             </div>
 
             {/* Security Notice */}
