@@ -247,10 +247,10 @@ export default function CryptoProofOfFunds() {
     }
   };
 
-//utility
-useEffect(() => {
-  window.scrollTo({ top: 0, behavior: "smooth" });
-}, [step]);
+  //utility
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, [step]);
 
   // check if connected
   useEffect(() => {
@@ -606,8 +606,12 @@ useEffect(() => {
       {/* Footer */}
       <footer className="relative border-t border-glass mt-16 sm:mt-20 backdrop-blur-xl bg-glass">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8 text-center text-xs sm:text-sm text-muted-foreground">
-          <p>Built with Next.js & Web3 • Demo Version</p>
-          <p className="mt-2 hidden sm:block">This is a concept demonstration. Real implementation would include actual wallet integration.</p>
+          <p>Built by Victor Adeiza (vicdevman) • <a
+            href="https://www.linkedin.com/in/vicdevmanx"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-blue-500 hover:underline font-bold"
+          > LinkedIn</a> </p>
         </div>
       </footer>
     </div>
