@@ -1,36 +1,166 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🪙 Proof of Funds MVP
 
-## Getting Started
+**Author:** [@vicdevmanx](https://x.com/vicdevman)  
+**Type:** Web3 Verification Utility  
+**Version:** MVP (Minimum Viable Product)
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## 📘 Overview
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+**Proof of Funds (PoF) MVP** is a Web3 application that allows users to **verify and prove ownership of funds** in their crypto wallets — securely, transparently, and without exposing private information.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+It provides a trusted way for individuals, investors, tenants, and organizations to **demonstrate financial capacity**, enabling more secure and trustworthy interactions both **on-chain and off-chain**.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+---
 
-## Learn More
+## 💡 Problem Statement
 
-To learn more about Next.js, take a look at the following resources:
+In Web3 — and even traditional finance — **trust is fragile**.  
+People often claim to have funds, but without a verifiable method of proof, those claims are hard to believe.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Traditional verification systems are:
+- Centralized and slow,  
+- Require unnecessary personal data,  
+- Not designed for crypto wallets or decentralized identities.  
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+**Proof of Funds MVP** fixes this by creating a **decentralized verification layer** that allows wallets to prove their balance — without revealing private data or needing a third party.
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 🎯 Project Goals
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+| Goal | Description |
+|------|--------------|
+| ✅ **Verification** | Allow users to generate proof that their wallet holds a specified amount of funds. |
+| ✅ **Transparency** | Let others verify the proof easily. |
+| ✅ **Privacy** | Ensure no private keys or sensitive details are ever exposed. |
+| ✅ **Simplicity** | Keep the experience fast and beginner-friendly. |
+| ✅ **Expandability** | Build a base for future integrations and blockchain utilities. |
+
+---
+
+## 👥 Target Users
+
+| User Type | Use Case |
+|------------|-----------|
+| **Investors / Contributors** | Prove they have sufficient funds to join a project or sale. |
+| **Landlords / Tenants** | Verify financial capacity when applying for rentals — landlords can use this system to confirm that a tenant’s portfolio or “funds proof” is legitimate, reducing fraud and improving trust. |
+| **Project Teams** | Verify if users or backers meet funding requirements. |
+| **Web3 Platforms** | Integrate the verification step to improve user credibility. |
+| **Developers** | Experiment and extend the concept for their own apps. |
+
+---
+
+## ⚙️ How It Works
+
+### 1. **Connect Wallet**
+The user connects a crypto wallet (e.g., MetaMask, Rainbow, Coinbase Wallet).  
+The system reads only public balance data — never private keys.
+
+### 2. **Verify Balance**
+It checks if the wallet meets a specific threshold (e.g., has at least 1 ETH).
+
+### 3. **Generate Proof**
+A digital “Proof of Funds Certificate” is created, showing that the wallet held a certain amount at a specific time.
+
+### 4. **Share Proof**
+Users can share this proof with others — landlords, project teams, or anyone needing verification.
+
+### 5. **Verify Proof**
+Anyone can validate the proof independently through the app interface.
+
+---
+
+## 🔐 Core Principles
+
+| Principle | Description |
+|------------|--------------|
+| **Transparency** | Proofs can be verified independently by anyone. |
+| **Privacy First** | No personal or private wallet details are shared. |
+| **Decentralization** | Built on blockchain data, not central databases. |
+| **User Ownership** | Users control their proofs and decide when to share them. |
+| **Integrity** | Every proof includes a timestamp and verifiable data. |
+
+---
+
+## 🧭 Example Use Cases
+
+### 💰 Investor Verification  
+Before joining a token sale or startup round, a user proves they have sufficient funds in their wallet.
+
+### 🏠 Tenant–Landlord Verification  
+When applying for an apartment, a tenant can show proof of their wallet balance instead of traditional financial documents.  
+The landlord can verify the proof directly — no banks, no screenshots, just blockchain-backed trust.
+
+### 🪙 DAO Membership  
+DAO communities can require members to prove they hold a certain number of governance tokens.
+
+### 🎓 Web3 Grants or Scholarships  
+Applicants can verify they meet staking or fund requirements to qualify for support.
+
+---
+
+## 🚀 MVP Features
+
+| Category | Description |
+|-----------|--------------|
+| **Wallet Connection** | Connects to standard Web3 wallets. |
+| **Balance Detection** | Reads wallet balances from blockchain data. |
+| **Proof Generation** | Creates verifiable digital proofs of balance. |
+| **Simple UI** | Minimalist and user-friendly. |
+| **Data Security** | Protects privacy — no sensitive data shared. |
+
+---
+
+## 📈 Future Enhancements
+
+| Feature | Description |
+|----------|--------------|
+| **Multi-Chain Support** | Add compatibility for Polygon, Solana, BSC, and more. |
+| **On-Chain Proof Storage** | Store proofs immutably on blockchain. |
+| **Expiry System** | Proofs expire after a certain period for freshness. |
+| **Verification Dashboard** | Manage multiple proofs visually. |
+| **API Integration** | Allow other apps to use proof verification seamlessly. |
+
+---
+
+## 🧱 Tech Overview (For Context)
+
+- **Frontend:** Next.js (React-based)
+- **Wallet Interaction:** Ethers.js or Web3.js  
+- **Blockchain Logic:** On-chain verification of wallet balances  
+- **Deployment:** MVP demo for testing and presentation  
+
+---
+
+## 🪶 Design Philosophy
+
+> “Transparency builds trust — and trust powers transactions.”
+
+**Proof of Funds MVP** is designed to feel minimal, secure, and open — blending blockchain transparency with real-world credibility.
+
+---
+
+## 🧭 Summary
+
+| Aspect | Summary |
+|--------|----------|
+| **What it is** | A verification tool that proves users’ wallet funds. |
+| **Why it matters** | Creates trust in financial and Web3 interactions. |
+| **Who it helps** | Investors, landlords, tenants, and digital platforms. |
+| **Next step** | Expand into a full decentralized proof ecosystem. |
+
+---
+
+### ✍️ Author
+
+**vicdevman**  
+*Web3 Developer & Software Engineer*  
+📍 Nigeria | 🧠 Building trust in Web3  
+🐦 Twitter/X: [@vicdevmanx](https://x.com/vicdevman)
+
+---
+
+> “The future of trust isn’t about paper documents — it’s about cryptographic proof.”
+
