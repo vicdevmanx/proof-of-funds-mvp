@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Wallet, FileText, Download, Check, Sparkles, Shield, TrendingUp, BarChart3, FileCheck2, LogOut, Copy } from 'lucide-react';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { useTheme } from '@/components/theme-provider'
@@ -12,8 +12,9 @@ import PDFCertificate from '@/components/PDFcertificate';
 import Certificate from '@/components/certificate';
 import { pdf } from '@react-pdf/renderer';
 import { useDisconnect } from 'wagmi'
+import { ChainSelectionDialog } from '@/components/ChainSelectionDialog';
 
-export default function CryptoProofOfFunds() {
+export default function App() {
 
   const [step, setStep] = useState(1);
   type PortfolioBalance = { token: string; amount: number; imgUrl: string; value: number; chain: string; symbol: string; address: string };
@@ -26,6 +27,9 @@ export default function CryptoProofOfFunds() {
   const { theme } = useTheme()
   const { address } = useAccount()
   const { disconnect } = useDisconnect()
+  const [isChainDialogOpen, setIsChainDialogOpen] = useState(false);
+  const [selectedChain, setSelectedChain] = useState<'ethereum' | 'solana' | 'bitcoin' | null>(null);
+  const connectButtonRef = useRef<HTMLButtonElement>(null);
 
 
   // ui elements
@@ -61,8 +65,8 @@ export default function CryptoProofOfFunds() {
     issueDate: new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }),
     verificationDate: new Date().toLocaleString('en-US'),
     certificateHash: `0x${Math.random().toString(16).slice(2, 18)}...`,
-    companyName: 'CryptoProof',
-    companyUrl: 'cryptoproof.io',
+    companyName: 'WalletScan',
+    companyUrl: 'wallet-scan.io',
     supportEmail: 'support@cryptoproof.io',
     disclaimer:
       'This certificate represents a snapshot of verified cryptocurrency holdings at the time of generation. Cryptocurrency values fluctuate and this document does not constitute financial advice. The holder maintains full custody of all assets. This certificate is for informational purposes only.',
@@ -252,6 +256,26 @@ export default function CryptoProofOfFunds() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, [step]);
 
+  // Load selected chain from localStorage on mount
+  useEffect(() => {
+    const storedChain = localStorage.getItem('selectedChain');
+    if (storedChain && ['ethereum', 'solana', 'bitcoin'].includes(storedChain)) {
+      setSelectedChain(storedChain as 'ethereum' | 'solana' | 'bitcoin');
+    }
+  }, []);
+
+  // Handle chain selection
+  const handleChainSelect = (chain: 'ethereum' | 'solana' | 'bitcoin') => {
+    setSelectedChain(chain);
+    localStorage.setItem('selectedChain', chain);
+    
+    // Only open the Ethereum wallet connection for now
+    if (chain === 'ethereum') {
+      // The ConnectButton will handle the connection
+      // You'll integrate Solana and Bitcoin later
+    }
+  };
+
   // check if connected
   useEffect(() => {
     if (address && step == 1) {
@@ -291,7 +315,17 @@ export default function CryptoProofOfFunds() {
             </div>
           </div>
           <div className="flex items-center gap-2 sm:gap-4">
-            {/* <span className="text-xs sm:text-sm text-muted-foreground hidden sm:inline">Demo Mode</span> */}
+            {/* Selected Chain Indicator */}
+            {selectedChain && (
+              <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-glass border border-glass">
+                <div className={`w-2 h-2 rounded-full ${
+                  selectedChain === 'ethereum' ? 'bg-blue-500' :
+                  selectedChain === 'solana' ? 'bg-purple-500' :
+                  'bg-orange-500'
+                }`} />
+                <span className="text-xs font-medium text-theme capitalize">{selectedChain}</span>
+              </div>
+            )}
             {address ? (
               <button
                 onClick={() => disconnect()}
@@ -351,17 +385,43 @@ export default function CryptoProofOfFunds() {
             </div>
 
             <div className="flex justify-center">
-            <ConnectButton.Custom>
-          {({ openConnectModal, account, chain }) => (
-            <button
-              onClick={openConnectModal}
-              className="px-8 py-4 rounded-full bg-gradient-to-r from-indigo-500 to-purple-500 text-white font-semibold hover:scale-105 transition-all shadow-lg"
-            >
-              {account ? "Connected ✅" : "Connect Wallet"}
-            </button>
-          )}
-        </ConnectButton.Custom>
+              <button
+                onClick={() => setIsChainDialogOpen(true)}
+                className="px-8 py-4 rounded-full bg-linear-to-r from-indigo-500 to-purple-500 text-white font-semibold hover:scale-105 transition-all shadow-lg"
+              >
+                Connect Wallet
+              </button>
             </div>
+
+            {/* Hidden ConnectButton for Ethereum */}
+            <div className="hidden">
+              <ConnectButton.Custom>
+                {({ openConnectModal }) => (
+                  <button
+                    ref={connectButtonRef}
+                    onClick={openConnectModal}
+                  >
+                    Connect
+                  </button>
+                )}
+              </ConnectButton.Custom>
+            </div>
+
+            {/* Chain Selection Dialog */}
+            <ChainSelectionDialog
+              open={isChainDialogOpen}
+              onOpenChange={setIsChainDialogOpen}
+              onChainSelect={(chain) => {
+                handleChainSelect(chain);
+                // For Ethereum, open the RainbowKit modal
+                if (chain === 'ethereum') {
+                  // Trigger the hidden connect button after dialog closes
+                  setTimeout(() => {
+                    connectButtonRef.current?.click();
+                  }, 100);
+                }
+              }}
+            />
 
             {/* Security Notice */}
             <div className="my-8 max-w-2xl mx-auto p-4 rounded-xl bg-blue-500/10 border border-blue-500/20">
@@ -598,19 +658,6 @@ export default function CryptoProofOfFunds() {
               </button>
               </div>
 
-              {/* Upgrade CTA */}
-              {/* <div className="mt-6 sm:mt-8 p-4 sm:p-6 rounded-2xl bg-gradient-to-r from-amber-500/20 to-orange-500/20 border border-amber-500/30">
-                <div className="flex items-center justify-center gap-2 mb-2">
-                  <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-amber-400" />
-                  <h4 className="font-semibold text-amber-400 text-sm sm:text-base">Upgrade to Pro</h4>
-                </div>
-                <p className="text-xs sm:text-sm text-muted-foreground mb-3 sm:mb-4">
-                  I.e Add KYC verification, custom branding, and QR codes
-                </p>
-                <button className="px-4 sm:px-6 py-2 rounded-lg bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 font-semibold text-xs sm:text-sm transition-all text-white">
-                  Upgrade Now - $9.99/mo
-                </button>
-              </div> */}
             </div>
           </div>
         )}
