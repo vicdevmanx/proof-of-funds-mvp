@@ -2,13 +2,12 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
-import Web3Provider from "@/providers/web3Provider";
-
-
+import MultiChainProvider from "@/providers/MultiChainProvider";
 
 export const metadata: Metadata = {
   title: "Proof of Funds Generator - Demo",
-  description: "Generate professional proof of funds documents for your crypto portfolio",
+  description:
+    "Generate professional proof of funds documents for your crypto portfolio",
 };
 
 export default function RootLayout({
@@ -19,12 +18,10 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        // className={` antialiased`}
+      // className={` antialiased`}
       >
         <ThemeProvider>
-          <Web3Provider>
-            {children}
-          </Web3Provider>
+          <MultiChainProvider>{children}</MultiChainProvider>
         </ThemeProvider>
       </body>
     </html>

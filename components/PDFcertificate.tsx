@@ -1,30 +1,8 @@
 import { Document, Page, Text, View, StyleSheet } from '@react-pdf/renderer';
 import React from 'react';
+import type { PDFCertificateProps } from '@/types';
 
-type BalanceItem = {
-  token: string;
-  amount: number;
-  chain: string;
-  address: string;
-  value: number;
-};
-
-type PDFCertificateProps = {
-  walletAddress: string;
-  totalValue: number;
-  balances: BalanceItem[];
-  certificateId: string;
-  issueDate: string;
-  verificationDate: string;
-  certificateHash: string;
-  companyName: string;
-  companyUrl: string;
-  supportEmail: string;
-  disclaimer: string;
-  verifications: string[];
-};
-
-// Helper to format address (same as before)
+// Helper to format address
 const formatAddress = (address: string) => `${address.slice(0, 6)}...${address.slice(-4)}`;
 
 // Styles (mirroring your Tailwind design)

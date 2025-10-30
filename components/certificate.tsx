@@ -1,33 +1,6 @@
 import { Shield, CheckCircle2, Scan } from 'lucide-react';
 import React from 'react';
-
-
-
-type BalanceItem = { 
-    token: string; 
-    amount: number; 
-    imgUrl: string; 
-    value: number; 
-    chain: string; 
-    symbol: string; 
-    address: string 
-};
-
-type CertificateProps = {
-    walletAddress: string;
-    totalValue: number;
-    balances: BalanceItem[];
-    certificateId: string;
-    issueDate: string;
-    verificationDate: string;
-    certificateHash: string;
-    companyName: string;
-    companyUrl: string;
-    supportEmail: string;
-    disclaimer: string;
-    verifications: string[];
-};
-
+import type { CertificateProps } from '@/types';
 
 const formatAddress = (address: string) => `${address.slice(0, 6)}...${address.slice(-4)}`;
 
