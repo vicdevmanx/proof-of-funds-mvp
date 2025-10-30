@@ -99,7 +99,7 @@ export const bitcoinAdapter = new BitcoinAdapter({
  */
 export const modal = createAppKit({
   adapters: [wagmiAdapter, solanaAdapter, bitcoinAdapter],
-  networks: allNetworks,
+  networks: [mainnet, polygon, arbitrum, solana, bitcoin],
   metadata,
   projectId,
   
