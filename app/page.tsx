@@ -24,7 +24,8 @@ import { pdf } from '@react-pdf/renderer';
 import type { PortfolioBalance } from '@/types';
 import { useAppKit, useAppKitAccount, useDisconnect as useAppKitDisconnect } from '@reown/appkit/react';
 import { useDisconnect } from 'wagmi';
-import { useMultiChain } from '@/hooks/useMultichain';
+import { useMultiChain } from '@/hooks/useMultiChain';
+import { fetchSolanaPortfolio, fetchBitcoinPortfolio } from '@/lib/portfolioFetchers';
 
 /**
  * App Component - Proof of Funds Generator
@@ -48,8 +49,6 @@ export default function App() {
 
   // AppKit hooks
   const { open } = useAppKit();
-  const { address: appKitAddress, isConnected: appKitConnected } =
-    useAppKitAccount();
   const { disconnect: disconnectWagmi } = useDisconnect();
   const { disconnect: disconnectAppKit } = useAppKitDisconnect();
 
@@ -230,92 +229,7 @@ export default function App() {
     }
   };
 
-  /**
-   * Fetch Solana portfolio (Demo implementation)
-   * TODO: Integrate with actual Solana API (Helius, Moralis, etc.)
-   */
-  const fetchSolanaPortfolio = async (
-    solAddress: string
-  ): Promise<{ balances: PortfolioBalance[]; totalValue: number }> => {
-    try {
-      console.log('Fetching Solana portfolio for:', solAddress);
-
-      // Demo data - Replace with actual Solana API call
-      const demoBalances: PortfolioBalance[] = [
-        {
-          token: 'Solana',
-          amount: 2.5,
-          imgUrl:
-            'https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/So11111111111111111111111111111111111111112/logo.png',
-          value: 250.0,
-          chain: 'Solana',
-          symbol: 'SOL',
-          address: 'So11111111111111111111111111111111111111112',
-        },
-        {
-          token: 'USD Coin',
-          amount: 100.0,
-          imgUrl:
-            'https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v/logo.png',
-          value: 100.0,
-          chain: 'Solana',
-          symbol: 'USDC',
-          address: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
-        },
-      ];
-
-      const demoTotalValue = demoBalances.reduce((sum, b) => sum + b.value, 0);
-
-      // Simulate API delay
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
-      return { balances: demoBalances, totalValue: demoTotalValue };
-    } catch (err: unknown) {
-      console.error(
-        'Solana Portfolio fetch error:',
-        (err as Error).message
-      );
-      throw err;
-    }
-  };
-
-  /**
-   * Fetch Bitcoin portfolio (Demo implementation)
-   * TODO: Integrate with actual Bitcoin API
-   */
-  const fetchBitcoinPortfolio = async (
-    btcAddress: string
-  ): Promise<{ balances: PortfolioBalance[]; totalValue: number }> => {
-    try {
-      console.log('Fetching Bitcoin portfolio for:', btcAddress);
-
-      // Demo data - Replace with actual Bitcoin API call
-      const demoBalances: PortfolioBalance[] = [
-        {
-          token: 'Bitcoin',
-          amount: 0.05,
-          imgUrl: 'https://cryptologos.cc/logos/bitcoin-btc-logo.png',
-          value: 2000.0,
-          chain: 'Bitcoin',
-          symbol: 'BTC',
-          address: btcAddress,
-        },
-      ];
-
-      const demoTotalValue = demoBalances.reduce((sum, b) => sum + b.value, 0);
-
-      // Simulate API delay
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
-      return { balances: demoBalances, totalValue: demoTotalValue };
-    } catch (err: unknown) {
-      console.error(
-        'Bitcoin Portfolio fetch error:',
-        (err as Error).message
-      );
-      throw err;
-    }
-  };
+  // Solana and Bitcoin portfolio fetchers are now imported from @/lib/portfolioFetchers
 
   /**
    * Main effect to fetch portfolio based on connected chain
@@ -330,7 +244,7 @@ export default function App() {
 
       try {
         let result: { balances: PortfolioBalance[]; totalValue: number };
-
+console.log('Custom Chain type log:', chainType)
         // Fetch portfolio based on connected chain type
         switch (chainType) {
           case 'evm':
