@@ -42,7 +42,7 @@ type SolanaCluster = 'mainnet-beta' | 'devnet';
 
 export const fetchSolanaPortfolioHelius = async (
   solanaAddress: string,
-  cluster: SolanaCluster = 'mainnet-beta'
+  cluster: SolanaCluster = 'devnet'
 ): Promise<{ balances: PortfolioBalance[]; totalValue: number }> => {
   try {
     console.log(`[Solana] Fetching portfolio for ${solanaAddress} on ${cluster}`);
