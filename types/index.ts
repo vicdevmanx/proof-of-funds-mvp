@@ -36,6 +36,7 @@ export type CertificateProps = {
   supportEmail: string;
   disclaimer: string;
   verifications: string[];
+  holderName?: string;
 };
 
 export type PDFCertificateProps = {
@@ -51,6 +52,7 @@ export type PDFCertificateProps = {
   supportEmail: string;
   disclaimer: string;
   verifications: string[];
+  holderName?: string;
 };
 
 

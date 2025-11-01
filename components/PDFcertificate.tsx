@@ -251,6 +251,39 @@ const styles = StyleSheet.create({
     color: '#6b7280',
     lineHeight: 1.5,
   },
+  holderSection: {
+    backgroundColor: '#eef2ff',
+    borderRadius: 10,
+    padding: 15,
+    marginBottom: 15,
+    textAlign: 'center',
+    borderWidth: 2,
+    borderColor: '#c7d2fe',
+  },
+  holderLabel: {
+    fontSize: 9,
+    color: '#6b7280',
+    textTransform: 'uppercase',
+    letterSpacing: 1,
+    marginBottom: 5,
+  },
+  holderName: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#111827',
+    marginBottom: 8,
+  },
+  holderDisclaimer: {
+    backgroundColor: '#fef3c7',
+    borderRadius: 6,
+    padding: 6,
+    borderWidth: 1,
+    borderColor: '#fcd34d',
+  },
+  holderDisclaimerText: {
+    fontSize: 8,
+    color: '#92400e',
+  },
 });
 
 const PDFCertificate: React.FC<PDFCertificateProps> = ({
@@ -266,6 +299,7 @@ const PDFCertificate: React.FC<PDFCertificateProps> = ({
   supportEmail,
   disclaimer,
   verifications,
+  holderName,
 }) => (
   <Document>
     <Page size="A4" style={styles.page}>
@@ -293,11 +327,22 @@ const PDFCertificate: React.FC<PDFCertificateProps> = ({
         <Text style={styles.subtitle}>This document certifies the verified cryptocurrency holdings</Text>
       </View>
 
+      {/* Holder Name Section */}
+      {holderName && (
+        <View style={styles.holderSection}>
+          <Text style={styles.holderLabel}>Certificate Holder</Text>
+          <Text style={styles.holderName}>{holderName}</Text>
+          <View style={styles.holderDisclaimer}>
+            <Text style={styles.holderDisclaimerText}>⚠ Self-Reported Identity (Not Verified)</Text>
+          </View>
+        </View>
+      )}
+
       {/* Wallet Info */}
       <View style={styles.walletInfo}>
         <View style={styles.walletGrid}>
           <View>
-            <Text style={styles.walletLabel}>Wallet Address</Text>
+            <Text style={styles.walletLabel}>Wallet Address (Verified)</Text>
             <Text style={styles.walletValue}>{walletAddress}</Text>
           </View>
           <View style={{ textAlign: 'right' }}>

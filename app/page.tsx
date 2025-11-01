@@ -43,6 +43,8 @@ export default function App() {
   const [isDownloading, setIsDownloading] = useState(false);
   const [copied, setCopied] = useState(false);
   const [isPortfolioLoading, setIsPortfolioLoading] = useState(false);
+  const [name, setName] = useState(''); // New state for self-reported name
+  const [nameError, setNameError] = useState(''); // Error state for name validation
 
   // Theme and UI
   const { theme } = useTheme();
@@ -74,6 +76,7 @@ export default function App() {
       setStep(1);
       setBalances([]);
       setTotalValue(0);
+      setName(''); // Reset name
     } catch (error) {
       console.error('Disconnect error:', error);
     }
@@ -106,7 +109,7 @@ export default function App() {
       ? 'from-white to-gray-400' // cool silvery glow for dark mode
       : 'from-gray-800 to-gray-500'; // rich graphite gradient for light mode
 
-  // Certificate props
+  // Certificate props with name
   const certificateProps = {
     walletAddress: address || '',
     totalValue: totalValue,
@@ -129,6 +132,7 @@ export default function App() {
       'Real-time balance confirmation',
       'Cryptographically signed certificate',
     ],
+    holderName: name || 'Anonymous Holder', // Add holderName prop; fallback if empty
   };
 
   // ============================================================================
@@ -288,6 +292,11 @@ console.log('Custom Chain type log:', chainType)
    * Generate PDF and advance to step 3
    */
   const generatePDF = async () => {
+    if (!name.trim()) {
+      setNameError('Name is required');
+      return;
+    }
+    setNameError('');
     setGenerating(true);
     await new Promise((resolve) => setTimeout(resolve, 200));
     setGenerating(false);
@@ -340,6 +349,7 @@ console.log('Custom Chain type log:', chainType)
       setStep(1);
       setBalances([]);
       setTotalValue(0);
+      setName(''); // Reset name
     }
   }, [isConnected, address, step]);
 
@@ -564,6 +574,7 @@ console.log('Custom Chain type log:', chainType)
             </div>
           </div>
         )}
+        
 
         {/* Step 2: Review Balances */}
         {step === 2 && (
@@ -581,6 +592,26 @@ console.log('Custom Chain type log:', chainType)
               <p className="text-muted-foreground text-base sm:text-lg">
                 Review your crypto holdings
               </p>
+            </div>
+
+ {/* Name Input Section - Integrated into Step 2 */}
+            <div className="max-w-3xl mx-auto mb-6 sm:mb-8">
+              <div className="p-4 sm:p-6 rounded-2xl bg-glass border border-glass backdrop-blur-xl">
+                <label className="block text-sm sm:text-base font-medium text-theme mb-2">
+                  Enter Your Name (Self-Reported)
+                </label>
+                <input
+                  type="text"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  placeholder="e.g., John Doe"
+                  className="w-full p-3 sm:p-4 rounded-xl bg-glass border border-glass focus:border-primary focus:outline-none text-theme placeholder-muted-foreground"
+                />
+                {nameError && <p className="text-red-500 text-xs sm:text-sm mt-2">{nameError}</p>}
+                <p className="text-xs text-muted-foreground mt-2">
+                  Disclaimer: We verify wallet addresses only—not your identity. This is for informational purposes only.
+                </p>
+              </div>
             </div>
 
             {/* Total Value Card */}
@@ -684,6 +715,8 @@ console.log('Custom Chain type log:', chainType)
                 </div>
               ))}
             </div>
+
+           
 
             {/* Bottom Action Bar - Step 2 */}
             <div className="fixed bottom-0 inset-x-0 z-50 border-t border-glass bg-glass backdrop-blur-xl">

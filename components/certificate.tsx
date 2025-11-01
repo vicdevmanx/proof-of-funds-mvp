@@ -17,6 +17,7 @@ const Certificate: React.FC<CertificateProps> = ({
     supportEmail,
     disclaimer,
     verifications,
+    holderName,
 }) => {
     return (
         <div className="w-full sm:max-w-5xl mx-auto px-0">
@@ -49,11 +50,24 @@ const Certificate: React.FC<CertificateProps> = ({
                     <p className="text-sm sm:text-base text-gray-600">This document certifies the verified cryptocurrency holdings</p>
                 </div>
 
+                {/* Holder Name Section */}
+                {holderName && (
+                    <div className="bg-gradient-to-r from-indigo-50 to-blue-50 rounded-xl p-4 sm:p-6 mb-6 border-2 border-indigo-200">
+                        <div className="text-center">
+                            <p className="text-xs sm:text-sm text-gray-600 mb-1 uppercase tracking-wide">Certificate Holder</p>
+                            <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">{holderName}</h3>
+                            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-100 border border-amber-300">
+                                <span className="text-xs text-amber-800">⚠️ Self-Reported Identity (Not Verified)</span>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
                 {/* Wallet Info */}
                 <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl p-4 sm:p-6 mb-6">
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
-                    <div className="text-left ">
-                            <p className="text-xs sm:text-sm text-gray-600 mb-1">Wallet Address</p>
+                        <div className="text-left">
+                            <p className="text-xs sm:text-sm text-gray-600 mb-1">Wallet Address (Verified)</p>
                             <p className="font-mono text-xs sm:text-sm font-semibold break-all">{walletAddress}</p>
                         </div>
                         <div className="text-left sm:text-right">
