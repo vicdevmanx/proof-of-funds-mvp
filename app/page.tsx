@@ -26,12 +26,21 @@ import { useAppKit, useAppKitAccount, useDisconnect as useAppKitDisconnect } fro
 import { useDisconnect } from 'wagmi';
 import { useMultiChain } from '@/hooks/useMultiChain';
 import { fetchSolanaPortfolio, fetchBitcoinPortfolio } from '@/lib/portfolioFetchers';
+import QRCode from 'qrcode';
+import toast from 'react-hot-toast';
 
 /**
  * App Component - Proof of Funds Generator
  * Unified multi-chain implementation using AppKit
  */
 export default function App() {
+  // ============================================================================
+  // CONFIGURATION
+  // ============================================================================
+  
+  // Number of balances to display in certificate (change this value to show more/less)
+  const BALANCES_TO_DISPLAY = 2;
+
   // ============================================================================
   // STATE MANAGEMENT
   // ============================================================================
@@ -77,8 +86,11 @@ export default function App() {
       setBalances([]);
       setTotalValue(0);
       setName(''); // Reset name
+      
+      toast.success('Wallet disconnected successfully');
     } catch (error) {
       console.error('Disconnect error:', error);
+      toast.error('Failed to disconnect wallet');
     }
   };
 
@@ -110,11 +122,15 @@ export default function App() {
       : 'from-gray-800 to-gray-500'; // rich graphite gradient for light mode
 
   // Certificate props with name
+const [certId, setCertId] = useState<string | null>(null);
+
+
   const certificateProps = {
     walletAddress: address || '',
     totalValue: totalValue,
-    balances: balances.slice(0, 2),
-    certificateId: `CP-${Date.now().toString().slice(-8)}`,
+    balances: balances.slice(0, BALANCES_TO_DISPLAY),
+    totalBalances: balances.length,
+    certificateId: certId || `Id failed to generate`,
     issueDate: new Date().toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'long',
@@ -271,8 +287,15 @@ console.log('Custom Chain type log:', chainType)
         // Update state with fetched data
         setBalances(result.balances);
         setTotalValue(result.totalValue);
+        
+        if (result.balances.length > 0) {
+          toast.success(`Portfolio loaded: ${result.balances.length} assets found`);
+        } else {
+          toast('No assets found in this wallet', { icon: 'ℹ️' });
+        }
       } catch (error) {
         console.error('Failed to fetch portfolio:', error);
+        toast.error('Failed to load portfolio. Please try again.');
         // Reset state on error
         setBalances([]);
         setTotalValue(0);
@@ -294,34 +317,85 @@ console.log('Custom Chain type log:', chainType)
   const generatePDF = async () => {
     if (!name.trim()) {
       setNameError('Name is required');
+      toast.error('Please enter your name to proceed');
       return;
     }
     setNameError('');
     setGenerating(true);
-    await new Promise((resolve) => setTimeout(resolve, 200));
-    setGenerating(false);
-    setStep(3);
+    toast.loading('Generating certificate...', { id: 'generate-cert' });
+    try {
+      // Call API to create certificate
+      const response = await fetch('/api/certificates', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          walletAddress: address,
+          holderName: name,
+          totalValue,
+          balances,
+          issueDate: certificateProps.issueDate,
+          verificationDate: certificateProps.verificationDate,
+        }),
+      });
+
+      const data = await response.json();
+      
+      if (response.ok && data.success) {
+        console.log('Certificate stored:', data.certificate);
+        setCertId(data.certificateId); // Update state for props
+        toast.success('Certificate generated successfully!', { id: 'generate-cert' });
+      } else {
+        console.error('Error storing certificate:', data.error);
+        toast.error('Failed to generate certificate', { id: 'generate-cert' });
+      }
+    } catch (error) {
+      console.error('Error storing certificate:', error);
+      toast.error('An error occurred while generating certificate', { id: 'generate-cert' });
+    } finally {
+      setGenerating(false);
+      setStep(3);
+    }
   };
+
 
   /**
    * Handle PDF export and download
    */
   const handleExport = async () => {
     setIsDownloading(true);
+    toast.loading('Preparing PDF download...', { id: 'pdf-download' });
     try {
-      const doc = <PDFCertificate {...certificateProps} />;
+      // Generate QR code first
+      const qrUrl = `${process.env.NEXT_PUBLIC_APP_URL || window.location.origin}/verify/${certificateProps.certificateId}`;
+      const qrCodeDataUrl = await QRCode.toDataURL(qrUrl, {
+        width: 256,
+        margin: 2,
+        errorCorrectionLevel: 'M',
+        color: {
+          dark: '#000000',
+          light: '#ffffff',
+        },
+      });
+
+      // Create PDF with QR code
+      const doc = <PDFCertificate {...certificateProps} qrCodeDataUrl={qrCodeDataUrl} />;
       const blob = await pdf(doc).toBlob();
       const url = URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;
-      link.download = `CryptoProof_Certificate_${certificateProps.certificateId.replace(
+      link.download = `walletScan_Certificate_${certificateProps.certificateId.replace(
         'CP-',
         ''
       )}.pdf`;
       link.click();
       URL.revokeObjectURL(url);
+      
+      toast.success('PDF downloaded successfully!', { id: 'pdf-download' });
     } catch (error) {
       console.error('PDF generation failed:', error);
+      toast.error('Failed to generate PDF. Please try again.', { id: 'pdf-download' });
     } finally {
       setIsDownloading(false);
     }
@@ -345,6 +419,7 @@ console.log('Custom Chain type log:', chainType)
   useEffect(() => {
     if (isConnected && address && step === 1) {
       setStep(2);
+      toast.success(`Wallet connected: ${address.slice(0, 6)}...${address.slice(-4)}`);
     } else if (!isConnected && step !== 1) {
       setStep(1);
       setBalances([]);
@@ -639,8 +714,10 @@ console.log('Custom Chain type log:', chainType)
                           await navigator.clipboard.writeText(address);
                           setCopied(true);
                           setTimeout(() => setCopied(false), 1200);
+                          toast.success('Address copied to clipboard!');
                         } catch (e) {
                           console.error('Clipboard copy failed', e);
+                          toast.error('Failed to copy address');
                         }
                       }}
                       className="inline-flex items-center gap-1 px-2 py-1 rounded-lg bg-primary/20 text-primary hover:bg-primary/30 transition-colors"

@@ -27,6 +27,7 @@ export type CertificateProps = {
   walletAddress: string;
   totalValue: number;
   balances: BalanceItem[];
+  totalBalances?: number;
   certificateId: string;
   issueDate: string;
   verificationDate: string;
@@ -43,6 +44,7 @@ export type PDFCertificateProps = {
   walletAddress: string;
   totalValue: number;
   balances: BalanceItem[];
+  totalBalances?: number;
   certificateId: string;
   issueDate: string;
   verificationDate: string;
@@ -53,6 +55,20 @@ export type PDFCertificateProps = {
   disclaimer: string;
   verifications: string[];
   holderName?: string;
+  qrCodeDataUrl?: string;
+};
+
+// MongoDB Certificate Document Type
+export type CertificateDocument = {
+  certificateId: string;
+  walletAddress: string;
+  holderName: string;
+  totalValue: number;
+  balances: BalanceItem[];
+  issueDate: string;
+  verificationDate: string;
+  certificateHash: string;
+  createdAt?: Date;
 };
 
 
