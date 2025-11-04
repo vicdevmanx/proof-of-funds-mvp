@@ -20,7 +20,23 @@ The application is configured to show popular wallets first in the connection mo
 - **Solana**: Trust Wallet, Phantom, Solflare
 - **Bitcoin**: Trust Wallet, Ledger
 
-## Mobile Optimization
+## Desktop vs Mobile Experience
+
+### Desktop Behavior
+
+On desktop, the wallet modal shows:
+- **Featured Wallets Only** (7 wallets listed above)
+- **No Duplication** - Installed browser extensions won't appear twice
+- **Clean Interface** - Focused on the most popular wallets
+- **Extensions Still Work** - Installed wallets connect instantly even if not in featured list
+
+### Mobile Behavior
+
+On mobile, the wallet modal shows:
+- **Featured Wallets First** (7 wallets at the top)
+- **All Available Wallets** (full list below featured ones)
+- **Deep Linking** - Taps open wallet apps directly
+- **Better Discovery** - Users can find any wallet they have installed
 
 ### How It Works
 
@@ -28,8 +44,9 @@ The wallet connection is optimized for mobile devices with proper deep linking:
 
 - **MetaMask Mobile**: Opens in-app browser with WalletConnect support
 - **Trust Wallet Mobile**: Native deep linking with multi-chain support
-- **Phantom Mobile**: Auto-detected when Solana network is active
+- **Phantom Mobile**: Native Solana wallet with smooth app integration
 - **Coinbase Wallet Mobile**: Native app integration
+- **Solflare Mobile**: Excellent Solana-focused mobile experience
 
 ### Mobile User Flow
 
@@ -88,9 +105,14 @@ features: {
   allWallets: true,      // Show all available wallets
 }
 
-allWallets: 'SHOW',      // Display all wallets after featured ones
-enableWalletGuide: true, // Show wallet installation guides
+allWallets: 'ONLY_MOBILE', // Full list on mobile, featured only on desktop
+enableWalletGuide: true,   // Show wallet installation guides
 ```
+
+**Why `ONLY_MOBILE`?**
+- **Desktop**: Shows only featured wallets (no duplication, cleaner UI)
+- **Mobile**: Shows all wallets (better discovery for users)
+- **Extensions**: Installed browser extensions still work on desktop even if not featured
 
 ### Customization
 

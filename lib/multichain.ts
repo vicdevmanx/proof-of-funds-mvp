@@ -137,8 +137,10 @@ export const modal = createAppKit({
   // Featured wallets appear first
   featuredWalletIds,
   
-  // Display all wallets in the modal
-  allWallets: 'SHOW',
+  // Display all wallets only on mobile to prevent desktop duplication
+  // Desktop: Shows only featured wallets (detected extensions still work)
+  // Mobile: Shows all available wallets for better discovery
+  allWallets: 'ONLY_MOBILE',
   
   // Enable wallet images for better UX
   enableWalletGuide: true,

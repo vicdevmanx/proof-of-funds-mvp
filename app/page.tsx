@@ -1,7 +1,7 @@
 // app/page.tsx
-'use client';
+"use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import {
   Wallet,
   FileText,
@@ -14,20 +14,27 @@ import {
   FileCheck2,
   LogOut,
   Copy,
-} from 'lucide-react';
-import { ThemeToggle } from '@/components/theme-toggle';
-import { useTheme } from '@/components/theme-provider';
-import axios from 'axios';
-import PDFCertificate from '@/components/PDFcertificate';
-import Certificate from '@/components/certificate';
-import { pdf } from '@react-pdf/renderer';
-import type { PortfolioBalance } from '@/types';
-import { useAppKit, useAppKitAccount, useDisconnect as useAppKitDisconnect } from '@reown/appkit/react';
-import { useDisconnect } from 'wagmi';
-import { useMultiChain } from '@/hooks/useMultiChain';
-import { fetchSolanaPortfolio, fetchBitcoinPortfolio } from '@/lib/portfolioFetchers';
-import QRCode from 'qrcode';
-import toast from 'react-hot-toast';
+} from "lucide-react";
+import { ThemeToggle } from "@/components/theme-toggle";
+import { useTheme } from "@/components/theme-provider";
+import axios from "axios";
+import PDFCertificate from "@/components/PDFcertificate";
+import Certificate from "@/components/certificate";
+import { pdf } from "@react-pdf/renderer";
+import type { PortfolioBalance } from "@/types";
+import {
+  useAppKit,
+  useAppKitAccount,
+  useDisconnect as useAppKitDisconnect,
+} from "@reown/appkit/react";
+import { useDisconnect } from "wagmi";
+import { useMultiChain } from "@/hooks/useMultiChain";
+import {
+  fetchSolanaPortfolio,
+  fetchBitcoinPortfolio,
+} from "@/lib/portfolioFetchers";
+import QRCode from "qrcode";
+import { toast } from "sonner";
 
 /**
  * App Component - Proof of Funds Generator
@@ -37,7 +44,7 @@ export default function App() {
   // ============================================================================
   // CONFIGURATION
   // ============================================================================
-  
+
   // Number of balances to display in certificate (change this value to show more/less)
   const BALANCES_TO_DISPLAY = 2;
 
@@ -52,8 +59,8 @@ export default function App() {
   const [isDownloading, setIsDownloading] = useState(false);
   const [copied, setCopied] = useState(false);
   const [isPortfolioLoading, setIsPortfolioLoading] = useState(false);
-  const [name, setName] = useState(''); // New state for self-reported name
-  const [nameError, setNameError] = useState(''); // Error state for name validation
+  const [name, setName] = useState(""); // New state for self-reported name
+  const [nameError, setNameError] = useState(""); // Error state for name validation
 
   // Theme and UI
   const { theme } = useTheme();
@@ -64,8 +71,12 @@ export default function App() {
   const { disconnect: disconnectAppKit } = useAppKitDisconnect();
 
   // Multi-chain hook
-  const { address, isConnected, chainType, isLoading: isWalletLoading } =
-    useMultiChain();
+  const {
+    address,
+    isConnected,
+    chainType,
+    isLoading: isWalletLoading,
+  } = useMultiChain();
 
   /**
    * Handle disconnect for all chains
@@ -75,22 +86,22 @@ export default function App() {
     try {
       // Disconnect using AppKit (works for all chains)
       await disconnectAppKit();
-      
+
       // Also disconnect Wagmi for EVM chains
-      if (chainType === 'evm') {
+      if (chainType === "evm") {
         disconnectWagmi();
       }
-      
+
       // Reset state
       setStep(1);
       setBalances([]);
       setTotalValue(0);
-      setName(''); // Reset name
-      
-      toast.success('Wallet disconnected successfully');
+      setName(""); // Reset name
+
+      toast.success("Wallet disconnected successfully");
     } catch (error) {
-      console.error('Disconnect error:', error);
-      toast.error('Failed to disconnect wallet');
+      console.error("Disconnect error:", error);
+      toast.error("Failed to disconnect wallet");
     }
   };
 
@@ -101,54 +112,53 @@ export default function App() {
   const features = [
     {
       icon: <Wallet className="w-10 h-10 text-indigo-500 mb-4" />,
-      title: 'Connect Wallet',
-      desc: 'Securely link your crypto wallets to verify ownership.',
+      title: "Connect Wallet",
+      desc: "Securely link your crypto wallets to verify ownership.",
     },
     {
       icon: <BarChart3 className="w-10 h-10 text-emerald-500 mb-4" />,
-      title: 'View Balances',
-      desc: 'Automatically pull your total holdings across chains.',
+      title: "View Balances",
+      desc: "Automatically pull your total holdings across chains.",
     },
     {
       icon: <FileCheck2 className="w-10 h-10 text-blue-500 mb-4" />,
-      title: 'Generate Proof',
-      desc: 'Download an official PDF with QR verification link.',
+      title: "Generate Proof",
+      desc: "Download an official PDF with QR verification link.",
     },
   ];
 
   const gradientClass =
-    theme === 'dark'
-      ? 'from-white to-gray-400' // cool silvery glow for dark mode
-      : 'from-gray-800 to-gray-500'; // rich graphite gradient for light mode
+    theme === "dark"
+      ? "from-white to-gray-400" // cool silvery glow for dark mode
+      : "from-gray-800 to-gray-500"; // rich graphite gradient for light mode
 
   // Certificate props with name
-const [certId, setCertId] = useState<string | null>(null);
-
+  const [certId, setCertId] = useState<string | null>(null);
 
   const certificateProps = {
-    walletAddress: address || '',
+    walletAddress: address || "",
     totalValue: totalValue,
     balances: balances.slice(0, BALANCES_TO_DISPLAY),
     totalBalances: balances.length,
     certificateId: certId || `Id failed to generate`,
-    issueDate: new Date().toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
+    issueDate: new Date().toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
     }),
-    verificationDate: new Date().toLocaleString('en-US'),
+    verificationDate: new Date().toLocaleString("en-US"),
     certificateHash: `0x${Math.random().toString(16).slice(2, 18)}...`,
-    companyName: 'WalletScan',
-    companyUrl: 'wallet-scan.io',
-    supportEmail: 'support@cryptoproof.io',
+    companyName: "WalletScan",
+    companyUrl: "wallet-scan.io",
+    supportEmail: "support@cryptoproof.io",
     disclaimer:
-      'This certificate represents a snapshot of verified cryptocurrency holdings at the time of generation. Cryptocurrency values fluctuate and this document does not constitute financial advice. The holder maintains full custody of all assets. This certificate is for informational purposes only.',
+      "This certificate represents a snapshot of verified cryptocurrency holdings at the time of generation. Cryptocurrency values fluctuate and this document does not constitute financial advice. The holder maintains full custody of all assets. This certificate is for informational purposes only.",
     verifications: [
-      'Blockchain data verified on-chain',
-      'Real-time balance confirmation',
-      'Cryptographically signed certificate',
+      "Blockchain data verified on-chain",
+      "Real-time balance confirmation",
+      "Cryptographically signed certificate",
     ],
-    holderName: name || 'Anonymous Holder', // Add holderName prop; fallback if empty
+    holderName: name || "Anonymous Holder", // Add holderName prop; fallback if empty
   };
 
   // ============================================================================
@@ -197,15 +207,15 @@ const [certId, setCertId] = useState<string | null>(null);
       };
 
       const resp = await axios.post(
-        'https://public.zapper.xyz/graphql',
+        "https://public.zapper.xyz/graphql",
         {
           query,
           variables,
         },
         {
           headers: {
-            'Content-Type': 'application/json',
-            'x-zapper-api-key': ZAPPER_API_KEY,
+            "Content-Type": "application/json",
+            "x-zapper-api-key": ZAPPER_API_KEY,
           },
         }
       );
@@ -239,11 +249,11 @@ const [certId, setCertId] = useState<string | null>(null);
     } catch (err: unknown) {
       if (axios.isAxiosError(err)) {
         console.error(
-          'EVM Portfolio fetch error:',
+          "EVM Portfolio fetch error:",
           err.response?.data || err.message
         );
       } else {
-        console.error('EVM Portfolio fetch error:', (err as Error).message);
+        console.error("EVM Portfolio fetch error:", (err as Error).message);
       }
       throw err;
     }
@@ -264,38 +274,40 @@ const [certId, setCertId] = useState<string | null>(null);
 
       try {
         let result: { balances: PortfolioBalance[]; totalValue: number };
-console.log('Custom Chain type log:', chainType)
+        console.log("Custom Chain type log:", chainType);
         // Fetch portfolio based on connected chain type
         switch (chainType) {
-          case 'evm':
+          case "evm":
             result = await fetchEVMPortfolio(address);
             break;
 
-          case 'solana':
+          case "solana":
             result = await fetchSolanaPortfolio(address);
             break;
 
-          case 'bitcoin':
+          case "bitcoin":
             result = await fetchBitcoinPortfolio(address);
             break;
 
           default:
-            console.warn('Unknown chain type:', chainType);
+            console.warn("Unknown chain type:", chainType);
             return;
         }
 
         // Update state with fetched data
         setBalances(result.balances);
         setTotalValue(result.totalValue);
-        
+
         if (result.balances.length > 0) {
-          toast.success(`Portfolio loaded: ${result.balances.length} assets found`);
+          toast.success(
+            `Portfolio loaded: ${result.balances.length} assets found`
+          );
         } else {
-          toast('No assets found in this wallet', { icon: 'ℹ️' });
+          toast("No assets found in this wallet", { icon: "ℹ️" });
         }
       } catch (error) {
-        console.error('Failed to fetch portfolio:', error);
-        toast.error('Failed to load portfolio. Please try again.');
+        console.error("Failed to fetch portfolio:", error);
+        toast.error("Failed to load portfolio. Please try again.");
         // Reset state on error
         setBalances([]);
         setTotalValue(0);
@@ -316,19 +328,19 @@ console.log('Custom Chain type log:', chainType)
    */
   const generatePDF = async () => {
     if (!name.trim()) {
-      setNameError('Name is required');
-      toast.error('Please enter your name to proceed');
+      setNameError("Name is required");
+      toast.error("Please enter your name to proceed");
       return;
     }
-    setNameError('');
+    setNameError("");
     setGenerating(true);
-    toast.loading('Generating certificate...', { id: 'generate-cert' });
+    toast.loading("Generating certificate...", { id: "generate-cert" });
     try {
       // Call API to create certificate
-      const response = await fetch('/api/certificates', {
-        method: 'POST',
+      const response = await fetch("/api/certificates", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           walletAddress: address,
@@ -341,61 +353,70 @@ console.log('Custom Chain type log:', chainType)
       });
 
       const data = await response.json();
-      
+
       if (response.ok && data.success) {
-        console.log('Certificate stored:', data.certificate);
+        console.log("Certificate stored:", data.certificate);
         setCertId(data.certificateId); // Update state for props
-        toast.success('Certificate generated successfully!', { id: 'generate-cert' });
+        toast.success("Certificate generated successfully!", {
+          id: "generate-cert",
+        });
       } else {
-        console.error('Error storing certificate:', data.error);
-        toast.error('Failed to generate certificate', { id: 'generate-cert' });
+        console.error("Error storing certificate:", data.error);
+        toast.error("Failed to generate certificate", { id: "generate-cert" });
       }
     } catch (error) {
-      console.error('Error storing certificate:', error);
-      toast.error('An error occurred while generating certificate', { id: 'generate-cert' });
+      console.error("Error storing certificate:", error);
+      toast.error("An error occurred while generating certificate", {
+        id: "generate-cert",
+      });
     } finally {
       setGenerating(false);
       setStep(3);
     }
   };
 
-
   /**
    * Handle PDF export and download
    */
   const handleExport = async () => {
     setIsDownloading(true);
-    toast.loading('Preparing PDF download...', { id: 'pdf-download' });
+    toast.loading("Preparing PDF download...", { id: "pdf-download" });
     try {
       // Generate QR code first
-      const qrUrl = `${process.env.NEXT_PUBLIC_APP_URL || window.location.origin}/verify/${certificateProps.certificateId}`;
+      const qrUrl = `${
+        process.env.NEXT_PUBLIC_APP_URL || window.location.origin
+      }/verify/${certificateProps.certificateId}`;
       const qrCodeDataUrl = await QRCode.toDataURL(qrUrl, {
         width: 256,
         margin: 2,
-        errorCorrectionLevel: 'M',
+        errorCorrectionLevel: "M",
         color: {
-          dark: '#000000',
-          light: '#ffffff',
+          dark: "#000000",
+          light: "#ffffff",
         },
       });
 
       // Create PDF with QR code
-      const doc = <PDFCertificate {...certificateProps} qrCodeDataUrl={qrCodeDataUrl} />;
+      const doc = (
+        <PDFCertificate {...certificateProps} qrCodeDataUrl={qrCodeDataUrl} />
+      );
       const blob = await pdf(doc).toBlob();
       const url = URL.createObjectURL(blob);
-      const link = document.createElement('a');
+      const link = document.createElement("a");
       link.href = url;
       link.download = `walletScan_Certificate_${certificateProps.certificateId.replace(
-        'CP-',
-        ''
+        "CP-",
+        ""
       )}.pdf`;
       link.click();
       URL.revokeObjectURL(url);
-      
-      toast.success('PDF downloaded successfully!', { id: 'pdf-download' });
+
+      toast.success("PDF downloaded successfully!", { id: "pdf-download" });
     } catch (error) {
-      console.error('PDF generation failed:', error);
-      toast.error('Failed to generate PDF. Please try again.', { id: 'pdf-download' });
+      console.error("PDF generation failed:", error);
+      toast.error("Failed to generate PDF. Please try again.", {
+        id: "pdf-download",
+      });
     } finally {
       setIsDownloading(false);
     }
@@ -409,8 +430,8 @@ console.log('Custom Chain type log:', chainType)
    * Scroll to top when step changes
    */
   useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }, [step]);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, [step, toast]);
 
   /**
    * Auto-advance to step 2 when wallet connects
@@ -419,12 +440,14 @@ console.log('Custom Chain type log:', chainType)
   useEffect(() => {
     if (isConnected && address && step === 1) {
       setStep(2);
-      toast.success(`Wallet connected: ${address.slice(0, 6)}...${address.slice(-4)}`);
+      toast.success(
+        `Wallet connected: ${address.slice(0, 6)}...${address.slice(-4)}`
+      );
     } else if (!isConnected && step !== 1) {
       setStep(1);
       setBalances([]);
       setTotalValue(0);
-      setName(''); // Reset name
+      setName(""); // Reset name
     }
   }, [isConnected, address, step]);
 
@@ -439,7 +462,7 @@ console.log('Custom Chain type log:', chainType)
         <div className="absolute -top-1/2 -left-1/2 w-full h-full bg-linear-to-br from-blue-500/10 to-purple-500/10 rounded-full blur-3xl animate-pulse" />
         <div
           className="absolute -bottom-1/2 -right-1/2 w-full h-full bg-linear-to-tl from-cyan-500/10 to-pink-500/10 rounded-full blur-3xl animate-pulse"
-          style={{ animationDelay: '1s' }}
+          style={{ animationDelay: "1s" }}
         />
       </div>
 
@@ -471,11 +494,11 @@ console.log('Custom Chain type log:', chainType)
               <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-glass border border-glass">
                 <div
                   className={`w-2 h-2 rounded-full ${
-                    chainType === 'evm'
-                      ? 'bg-blue-500'
-                      : chainType === 'solana'
-                        ? 'bg-purple-500'
-                        : 'bg-orange-500'
+                    chainType === "evm"
+                      ? "bg-blue-500"
+                      : chainType === "solana"
+                      ? "bg-purple-500"
+                      : "bg-orange-500"
                   }`}
                 />
                 <span className="text-xs font-medium text-theme capitalize">
@@ -516,16 +539,16 @@ console.log('Custom Chain type log:', chainType)
             <div key={num} className="flex items-center gap-2 sm:gap-4">
               <div
                 className={`flex items-center gap-2 sm:gap-3 ${
-                  step >= num ? 'opacity-100' : 'opacity-40'
+                  step >= num ? "opacity-100" : "opacity-40"
                 }`}
               >
                 <div
                   className={`w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center border-2 transition-all ${
                     step > num
-                      ? 'bg-green-500/20 border-green-500'
+                      ? "bg-green-500/20 border-green-500"
                       : step === num
-                        ? 'bg-primary/20 border-primary shadow-lg shadow-primary'
-                        : 'border-border'
+                      ? "bg-primary/20 border-primary shadow-lg shadow-primary"
+                      : "border-border"
                   }`}
                 >
                   {step > num ? (
@@ -535,13 +558,13 @@ console.log('Custom Chain type log:', chainType)
                   )}
                 </div>
                 <span className="text-xs sm:text-sm font-medium hidden sm:inline text-theme">
-                  {num === 1 ? 'Connect' : num === 2 ? 'Review' : 'Generate'}
+                  {num === 1 ? "Connect" : num === 2 ? "Review" : "Generate"}
                 </span>
               </div>
               {num < 3 && (
                 <div
                   className={`w-8 sm:w-16 h-0.5 ${
-                    step > num ? 'bg-green-500' : 'bg-border'
+                    step > num ? "bg-green-500" : "bg-border"
                   }`}
                 />
               )}
@@ -649,7 +672,6 @@ console.log('Custom Chain type log:', chainType)
             </div>
           </div>
         )}
-        
 
         {/* Step 2: Review Balances */}
         {step === 2 && (
@@ -669,7 +691,7 @@ console.log('Custom Chain type log:', chainType)
               </p>
             </div>
 
- {/* Name Input Section - Integrated into Step 2 */}
+            {/* Name Input Section - Integrated into Step 2 */}
             <div className="max-w-3xl mx-auto mb-6 sm:mb-8">
               <div className="p-4 sm:p-6 rounded-2xl bg-glass border border-glass backdrop-blur-xl">
                 <label className="block text-sm sm:text-base font-medium text-theme mb-2">
@@ -682,9 +704,14 @@ console.log('Custom Chain type log:', chainType)
                   placeholder="e.g., John Doe"
                   className="w-full p-3 sm:p-4 rounded-xl bg-glass border border-glass focus:border-primary focus:outline-none text-theme placeholder-muted-foreground"
                 />
-                {nameError && <p className="text-red-500 text-xs sm:text-sm mt-2">{nameError}</p>}
+                {nameError && (
+                  <p className="text-red-500 text-xs sm:text-sm mt-2">
+                    {nameError}
+                  </p>
+                )}
                 <p className="text-xs text-muted-foreground mt-2">
-                  Disclaimer: We verify wallet addresses only—not your identity. This is for informational purposes only.
+                  Disclaimer: We verify wallet addresses only—not your identity.
+                  This is for informational purposes only.
                 </p>
               </div>
             </div>
@@ -704,7 +731,7 @@ console.log('Custom Chain type log:', chainType)
                     <span className="font-mono text-xs sm:text-sm text-theme">
                       {address
                         ? `${address.slice(0, 6)}...${address.slice(-4)}`
-                        : 'Not connected'}
+                        : "Not connected"}
                     </span>
                     <button
                       type="button"
@@ -714,10 +741,10 @@ console.log('Custom Chain type log:', chainType)
                           await navigator.clipboard.writeText(address);
                           setCopied(true);
                           setTimeout(() => setCopied(false), 1200);
-                          toast.success('Address copied to clipboard!');
+                          toast.success("Address copied to clipboard!");
                         } catch (e) {
-                          console.error('Clipboard copy failed', e);
-                          toast.error('Failed to copy address');
+                          console.error("Clipboard copy failed", e);
+                          toast.error("Failed to copy address");
                         }
                       }}
                       className="inline-flex items-center gap-1 px-2 py-1 rounded-lg bg-primary/20 text-primary hover:bg-primary/30 transition-colors"
@@ -725,7 +752,7 @@ console.log('Custom Chain type log:', chainType)
                     >
                       <Copy className="w-3.5 h-3.5" />
                       <span className="text-xs">
-                        {copied ? 'Copied' : 'Copy'}
+                        {copied ? "Copied" : "Copy"}
                       </span>
                     </button>
                   </div>
@@ -793,13 +820,14 @@ console.log('Custom Chain type log:', chainType)
               ))}
             </div>
 
-           
-
             {/* Bottom Action Bar - Step 2 */}
             <div className="fixed bottom-0 inset-x-0 z-50 border-t border-glass bg-glass backdrop-blur-xl">
               <div className="max-w-6xl mx-auto px-4 sm:px-6 py-3">
                 <button
-                  onClick={generatePDF}
+                  onClick={() => {
+                    window.scrollTo({ top: 0, behavior: "smooth" });
+                    generatePDF();
+                  }}
                   disabled={generating || isPortfolioLoading}
                   className="w-full py-3 sm:py-4 rounded-2xl bg-gradient-primary hover:opacity-90 font-semibold text-base sm:text-lg transition-all hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed shadow-primary text-white"
                 >
@@ -860,7 +888,7 @@ console.log('Custom Chain type log:', chainType)
                   >
                     <Download className="w-4 h-4 sm:w-5 sm:h-5" />
                     <span className="text-sm sm:text-base">
-                      {isDownloading ? 'Downloading...' : 'Download PDF'}
+                      {isDownloading ? "Downloading..." : "Download PDF"}
                     </span>
                   </button>
                 </div>
@@ -894,21 +922,21 @@ console.log('Custom Chain type log:', chainType)
       {/* Footer */}
       <footer
         className={`relative border-t border-glass mt-16 sm:mt-20 backdrop-blur-xl bg-glass ${
-          step == 1 ? 'mb-0' : 'mb-16 sm:mb-20'
+          step == 1 ? "mb-0" : "mb-16 sm:mb-20"
         }`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8 text-center text-xs sm:text-sm text-muted-foreground">
           <p>
-            Built by Victor Adeiza (vicdevman) •{' '}
+            Built by Victor Adeiza (vicdevman) •{" "}
             <a
               href="https://www.linkedin.com/in/victor-adeiza-vicdevman-043902257"
               target="_blank"
               rel="noopener noreferrer"
               className="text-blue-500 hover:underline font-bold"
             >
-              {' '}
+              {" "}
               LinkedIn
-            </a>{' '}
+            </a>{" "}
           </p>
         </div>
       </footer>
