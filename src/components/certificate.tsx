@@ -29,11 +29,11 @@ const Certificate: React.FC<CertificateProps> = ({
         <div className="flex flex-col sm:flex-row items-start justify-between mb-6 sm:mb-8 pb-6 border-b-2 border-gray-200">
           <div className="mb-4 sm:mb-0">
             <div className="flex items-center gap-3 mb-2">
-              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-blue-600 to-purple-600 rounded-xl flex items-center justify-center">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-linear-to-br from-blue-600 to-purple-600 rounded-xl flex items-center justify-center">
                 <Shield className="w-6 h-6 sm:w-7 sm:h-7 text-white" />
               </div>
               <div>
-                <h1 className=" text-2xl sm:text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                <h1 className=" text-2xl sm:text-3xl font-bold bg-linear-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
                   {companyName}
                 </h1>
                 <p className="text-xs sm:text-sm text-gray-600">
@@ -65,7 +65,7 @@ const Certificate: React.FC<CertificateProps> = ({
 
         {/* Holder Name Section */}
         {holderName && (
-          <div className="bg-gradient-to-r from-indigo-50 to-blue-50 rounded-xl p-4 sm:p-6 mb-6 border-2 border-indigo-200">
+          <div className="bg-linear-to-r from-indigo-50 to-blue-50 rounded-xl p-4 sm:p-6 mb-6 border-2 border-indigo-200">
             <div className="text-center">
               <p className="text-xs sm:text-sm text-gray-600 mb-1 uppercase tracking-wide">
                 Certificate Holder
@@ -83,7 +83,7 @@ const Certificate: React.FC<CertificateProps> = ({
         )}
 
         {/* Wallet Info */}
-        <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl p-4 sm:p-6 mb-6">
+        <div className="bg-linear-to-r from-blue-50 to-purple-50 rounded-xl p-4 sm:p-6 mb-6">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
             <div className="text-left">
               <p className="text-xs sm:text-sm text-gray-600 mb-1">
@@ -105,7 +105,7 @@ const Certificate: React.FC<CertificateProps> = ({
         </div>
 
         {/* Total Value - Highlighted */}
-        <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl p-6 sm:p-8 mb-6 text-white text-center">
+        <div className="bg-linear-to-r from-blue-600 to-purple-600 rounded-xl p-6 sm:p-8 mb-6 text-white text-center">
           <p className="text-xs sm:text-sm opacity-90 mb-2 uppercase tracking-wide">
             Total Verified Value
           </p>
@@ -118,7 +118,7 @@ const Certificate: React.FC<CertificateProps> = ({
         {/* Asset Breakdown */}
         <div className="mb-6 sm:mb-8">
           <h3 className="text-base sm:text-lg font-bold mb-4 flex items-center gap-2">
-            <div className="w-1 h-5 sm:h-6 bg-gradient-to-b from-blue-600 to-purple-600 rounded-full" />
+            <div className="w-1 h-5 sm:h-6 bg-linear-to-br from-blue-600 to-purple-600 rounded-full" />
             Asset Breakdown - {balances.length}/{totalBalances || balances.length}
           </h3>
           <div className="space-y-3">
@@ -128,7 +128,7 @@ const Certificate: React.FC<CertificateProps> = ({
                 className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-200"
               >
                 <div className="flex items-center gap-3 mb-3 sm:mb-0">
-                  <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center text-white font-bold">
+                  <div className="w-8 h-8 sm:w-10 sm:h-10 bg-linear-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center text-white font-bold">
                     {balance.token[0]}
                   </div>
                   <div className="text-left ">
@@ -167,7 +167,7 @@ const Certificate: React.FC<CertificateProps> = ({
             </div>
           </div>
           <div className="text-center">
-            <div className="w-30 h-30 sm:w-32 sm:h-32 bg-gradient-to-br from-blue-100 to-purple-100 rounded-sm flex items-center justify-center mb-2 border-2 border-gray-300 p-1">
+            <div className="w-30 h-30 sm:w-32 sm:h-32 bg-linear-to-br from-blue-100 to-purple-100 rounded-sm flex items-center justify-center mb-2 border-2 border-gray-300 p-1">
               {/* <Scan className="w-12 h-12 sm:w-16 sm:h-16 text-gray-400" /> */}
               <QRCodeSVG
                 value={`${process.env.NEXT_PUBLIC_APP_URL}/verify/${certificateId}`}

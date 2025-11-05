@@ -105,13 +105,13 @@ export const bitcoinAdapter = new BitcoinAdapter({
  * - Solflare: Solana-focused wallet with great mobile UX
  */
 export const featuredWalletIds = [
+  'c03dfee351b6fcc421b4494ea33b9d4b92a984f87aa76d1663bb28705e95034a', // WalletConnect
   'c57ca95b47569778a828d19178114f4db188b89b763c899ba0be274e97267d96', // MetaMask (EVM)
   '4622a2b2d6af1c9844944291e5e7351a6aa24cd7b23099efac1b2fd875da31a0', // Trust Wallet (Multi-chain)
   'a797aa35c0fadbfc1a53e7f675162ed5226968b44a19ee3d24385c64d1d3c393', // Phantom (Solana + Ethereum)
   'fd20dc426fb37566d803205b19bbc1d4096b248ac04548e3cfb6b3a38bd033aa', // Coinbase Wallet (EVM)
   '1ae92b26df02f0abca6304df07debccd18262fdf5fe82daa81593582dac9a369', // Rainbow (EVM)
   '971e689d0a5be527bac79629b4ee9b925e82208e5168b733496a09c0faed0709', // Solflare (Solana)
-  '19177a98252e07ddfc9af2083ba8e07ef627cb6103467ffebb3f8f4205fd7927', // Ledger Live (Multi-chain)
 ];
 
 /**
@@ -136,11 +136,6 @@ export const modal = createAppKit({
   
   // Featured wallets appear first
   featuredWalletIds,
-  
-  // Display all wallets only on mobile to prevent desktop duplication
-  // Desktop: Shows only featured wallets (detected extensions still work)
-  // Mobile: Shows all available wallets for better discovery
-  allWallets: 'ONLY_MOBILE',
   
   // Enable wallet images for better UX
   enableWalletGuide: true,
