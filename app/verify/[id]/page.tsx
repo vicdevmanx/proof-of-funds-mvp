@@ -1,31 +1,33 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import { useParams } from 'next/navigation';
-import { CertificateDocument } from '@/types';
-import Certificate from '@/components/certificate';
-import { Shield, CheckCircle, XCircle } from 'lucide-react';
+import { useEffect, useState } from "react";
+import { useParams } from "next/navigation";
+import { CertificateDocument } from "@/types";
+import Certificate from "@/components/certificate";
+import { Shield, CheckCircle, XCircle } from "lucide-react";
 
 export default function Verify() {
   const params = useParams();
   const id = params.id;
-  const [certificate, setCertificate] = useState<CertificateDocument | null>(null);
+  const [certificate, setCertificate] = useState<CertificateDocument | null>(
+    null
+  );
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
 
   useEffect(() => {
     const fetchCertificate = async () => {
       try {
         const response = await fetch(`/api/certificates/${id}`);
         const data = await response.json();
-        
+
         if (response.ok && data.success) {
           setCertificate(data.certificate);
         } else {
-          setError(data.error || 'Certificate not found');
+          setError(data.error || "Certificate not found");
         }
       } catch (err) {
-        setError('Error fetching certificate');
+        setError("Error fetching certificate");
         console.error(err);
       } finally {
         setLoading(false);
@@ -40,7 +42,9 @@ export default function Verify() {
       <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center p-4">
         <div className="text-center">
           <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-lg text-gray-700 dark:text-gray-300">Verifying certificate...</p>
+          <p className="text-lg text-gray-700 dark:text-gray-300">
+            Verifying certificate...
+          </p>
         </div>
       </div>
     );
@@ -53,7 +57,9 @@ export default function Verify() {
           <div className="w-20 h-20 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
             <XCircle className="w-12 h-12 text-red-600 dark:text-red-400" />
           </div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Verification Failed</h1>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+            Verification Failed
+          </h1>
           <p className="text-gray-600 dark:text-gray-400 mb-6">{error}</p>
           <a
             href="/"
@@ -77,16 +83,16 @@ export default function Verify() {
     issueDate: certificate.issueDate,
     verificationDate: certificate.verificationDate,
     certificateHash: certificate.certificateHash,
-    companyName: 'WalletScan',
-    companyUrl: 'wallet-scan.io',
-    supportEmail: 'support@walletscan.io',
+    companyName: "WalletScan",
+    companyUrl: "wallet-scan.io",
+    supportEmail: "support@walletscan.io",
     disclaimer:
-      'This certificate represents a snapshot of verified cryptocurrency holdings at the time of generation. Cryptocurrency values fluctuate and this document does not constitute financial advice. The holder maintains full custody of all assets. This certificate is for informational purposes only.',
+      "This certificate represents a snapshot of verified cryptocurrency holdings at the time of generation. Cryptocurrency values fluctuate and this document does not constitute financial advice. The holder maintains full custody of all assets. This certificate is for informational purposes only.",
     verifications: [
-      'Blockchain data verified',
-      'Wallet ownership confirmed',
-      'Real-time balance snapshot',
-      'Cryptographically secured',
+      "Blockchain data verified",
+      "Wallet ownership confirmed",
+      "Real-time balance snapshot",
+      "Cryptographically secured",
     ],
     holderName: certificate.holderName,
   };
@@ -104,7 +110,8 @@ export default function Verify() {
               ✓ Certificate Verified Successfully
             </h2>
             <p className="text-sm text-green-700 dark:text-green-300">
-              This certificate has been verified on the blockchain and is authentic.
+              This certificate has been verified on the blockchain and is
+              authentic.
             </p>
           </div>
         </div>
@@ -123,15 +130,21 @@ export default function Verify() {
                 About This Verification
               </h3>
               <p className="text-sm text-blue-700 dark:text-blue-300">
-                This page displays a verified proof of funds certificate. The wallet address and holdings have been
-                verified on the blockchain. Note that the holder name is self-reported and not verified. Always
-                conduct your own due diligence.
+                This page displays a verified proof of funds certificate. The
+                wallet address and holdings have been verified on the
+                blockchain. Note that the holder name is self-reported and not
+                verified. Always conduct your own due diligence.
               </p>
             </div>
           </div>
         </div>
-      </div>
-      
+          <button
+        onClick={() => (window.location.href = "/")}
+        className="w-full px-6 mt-4 py-3 rounded-xl bg-gradient-primary text-white font-semibold hover:opacity-90 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+      >
+        Generate Your Own Certificate
+      </button>
+      </div> 
     </div>
   );
 }

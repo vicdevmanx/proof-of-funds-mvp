@@ -75,13 +75,13 @@ export function InAppBrowserModal({
           {/* Actions */}
           <div className="space-y-3">
             {/* Open in Browser Button */}
-            <button
+            {/* <button
               onClick={handleOpenExternal}
               className="w-full py-3 px-4 rounded-xl bg-gradient-primary hover:opacity-90 font-semibold text-white transition-all hover:scale-[1.02] flex items-center justify-center gap-2"
             >
               <ExternalLink className="w-5 h-5" />
               <span>Open in External Browser</span>
-            </button>
+            </button> */}
 
             {/* Copy Link Button */}
             <button
