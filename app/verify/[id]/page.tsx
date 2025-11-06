@@ -131,6 +131,7 @@ export default function Verify() {
           </div>
         </div>
       </div>
+      
     </div>
   );
 }

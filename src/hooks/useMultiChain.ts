@@ -26,33 +26,39 @@ export function useMultiChain() {
     setMounted(true);
   }, []);
 
-  // Use connected address with fallback
-  const address = evmAddress || appKitAddress;
-  
-  // Check connection status from both sources
-  // AppKit handles Solana and Bitcoin, Wagmi handles EVM
-  const isConnected = isEvmConnected || isAppKitConnected || !!appKitAddress;
-  const isLoading = isConnecting || isReconnecting || !mounted;
-  
-  // Detect chain type from multiple sources
+  let address: string | undefined;
   let chainType: ChainType | null = null;
-  
-  // Detect from CAIP address (most reliable for Solana/Bitcoin)
-  if (caipAddress && typeof caipAddress === 'string') {
-    if (caipAddress.startsWith('solana:')) {
+  let isConnected = false;
+
+  // Prioritize AppKit for non-EVM chains
+  if (isAppKitConnected && appKitAddress) {
+    if (caipAddress?.startsWith('solana:')) {
       chainType = 'solana';
-    } else if (caipAddress.startsWith('bip122:')) {
+      address = appKitAddress;
+      isConnected = true;
+    } else if (caipAddress?.startsWith('bip122:')) {
       chainType = 'bitcoin';
-    } else if (caipAddress.startsWith('eip155:')) {
-      chainType = 'evm';
+      address = appKitAddress;
+      isConnected = true;
     }
   }
-  
-  // Fallback to address-based detection
-  if (!chainType && address) {
-    chainType = getChainType(address);
+
+  // Fallback to EVM if AppKit is not connected for a non-EVM chain
+  if (!isConnected && isEvmConnected && evmAddress) {
+    chainType = 'evm';
+    address = evmAddress;
+    isConnected = true;
   }
-  
+
+  const isLoading = isConnecting || isReconnecting || !mounted;
+
+  // If no wallet is connected, ensure all state is cleared
+  if (!isEvmConnected && !isAppKitConnected) {
+    address = undefined;
+    chainType = null;
+    isConnected = false;
+  }
+
   return {
     address,
     chainType,

@@ -58,7 +58,7 @@ export function ReviewBalancesStep({
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="e.g., John Doe"
-            className="w-full p-3 sm:p-4 rounded-xl bg-glass border border-glass focus:border-primary focus:outline-none text-theme placeholder-muted-foreground"
+            className={`w-full p-3 sm:p-3 rounded-lg bg-glass border border-glass focus:border-primary focus:outline-none text-theme placeholder-muted-foreground ${nameError && "outline-red-500 outline-1"}`}
           />
           {nameError && (
             <p className="text-red-500 text-xs sm:text-sm mt-2">{nameError}</p>
@@ -79,7 +79,7 @@ export function ReviewBalancesStep({
               Total Portfolio Value
             </p>
             <h3 className="text-3xl sm:text-4xl lg:text-5xl font-bold bg-linear-to-r from-[#3b82f6] to-[#8b5cf6] bg-clip-text text-transparent">
-              ${totalValue.toLocaleString()}
+              ${isPortfolioLoading ? '...' : totalValue.toLocaleString()}
             </h3>
             <div className="mt-3 inline-flex items-center gap-2 px-3 py-2 rounded-xl border border-glass bg-glass hover-glass transition-all">
               <span className="font-mono text-xs sm:text-sm text-theme">
@@ -187,13 +187,18 @@ export function ReviewBalancesStep({
               <span className="flex items-center justify-center gap-2">
                 <div className="w-4 h-4 sm:w-5 sm:h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                 <span className="text-sm sm:text-base">
-                  Generating PDF...
+                  Processing...
                 </span>
               </span>
             ) : (
-              <span className="flex items-center justify-center gap-2">
-                <FileText className="w-4 h-4 sm:w-5 sm:h-5" />
-                <span>Generate Certificate</span>
+              <span className="flex sm:flex-row items-center justify-center gap-1 sm:gap-2">
+                <span className="flex items-center gap-2">
+                  <FileText className="w-4 h-4 sm:w-5 sm:h-5" />
+                  <span>Generate Certificate</span>
+                </span>
+                <span className="text-xs sm:text-sm opacity-90 font-normal">
+                  • $9.99
+                </span>
               </span>
             )}
           </button>

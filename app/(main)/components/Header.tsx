@@ -2,28 +2,18 @@
 
 import { Shield, LogOut } from "lucide-react";
 import { ThemeToggle } from "@/components/theme-toggle";
-import { useAppKit, useDisconnect as useAppKitDisconnect } from "@reown/appkit/react";
-import { useDisconnect } from "wagmi";
+import { useAppKit } from "@reown/appkit/react";
 import { useMultiChain } from "@/hooks/useMultiChain";
+import { useUnifiedDisconnect } from "@/hooks/useUnifiedDisconnect";
 import { toast } from "sonner";
 
 export function Header() {
   const { open } = useAppKit();
-  const { disconnect: disconnectWagmi } = useDisconnect();
-  const { disconnect: disconnectAppKit } = useAppKitDisconnect();
   const { isConnected, chainType } = useMultiChain();
+  const { disconnect } = useUnifiedDisconnect();
 
   const handleDisconnect = async () => {
-    try {
-      await disconnectAppKit();
-      if (chainType === "evm") {
-        disconnectWagmi();
-      }
-      toast.success("Wallet disconnected successfully");
-    } catch (error) {
-      console.error("Disconnect error:", error);
-      toast.error("Failed to disconnect wallet");
-    }
+    await disconnect();
   };
 
   return (

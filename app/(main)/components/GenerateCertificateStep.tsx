@@ -54,7 +54,7 @@ export function GenerateCertificateStep({
               ) : (
                 <span className="flex items-center justify-center gap-2">
                   <Download className="w-4 h-4 sm:w-5 sm:h-5" />
-                  <span>Download PDF</span>
+                  <span>Download Again</span>
                 </span>
               )}
             </button>

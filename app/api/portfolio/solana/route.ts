@@ -59,7 +59,7 @@ export async function POST(request: NextRequest) {
     }
 
     const endpoint = CLUSTER_ENDPOINTS[cluster as SolanaCluster] || CLUSTER_ENDPOINTS['mainnet-beta'];
-
+// didn't have solana on mainnet, so i tested with this address on mainnet 244b9oPYSG2tbz8q3KfeRNoFBEGHnV3sExbpjUb8C2rj . got it from dexscreener
     const response = await axios.post(
       `${endpoint}${HELIUS_API_KEY}`,
       {
