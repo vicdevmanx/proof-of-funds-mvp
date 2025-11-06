@@ -19,8 +19,10 @@ import { ProgressBar } from "./components/ProgressBar";
 import { ConnectWalletStep } from "./components/ConnectWalletStep";
 import { ReviewBalancesStep } from "./components/ReviewBalancesStep";
 import { GenerateCertificateStep } from "./components/GenerateCertificateStep";
+import { InAppBrowserModal } from "./components/InAppBrowserModal";
 import { getStripe } from "@/lib/get-stripe";
 import { error } from "console";
+import { isInAppBrowser, getWalletBrowserName } from "@/lib/browserDetection";
 
 export default function App() {
   const BALANCES_TO_DISPLAY = 2;
@@ -39,6 +41,8 @@ export default function App() {
     useState<string>("");
   const [paymentStatus, setPaymentStatus] = useState("idle");
   const [isPaymentLoading, setIsPaymentLoading] = useState(false);
+  const [showInAppModal, setShowInAppModal] = useState(false);
+  const [pendingPdfUrl, setPendingPdfUrl] = useState<string>("");
 
   const { theme } = useTheme();
   const { disconnect: disconnectWagmi } = useDisconnect();
@@ -133,15 +137,28 @@ export default function App() {
       );
       const blob = await pdf(doc).toBlob();
       const url = URL.createObjectURL(blob);
-      const link = document.createElement("a");
-      link.href = url;
-      link.download = `walletScan_Certificate_${certificateProps.certificateId.replace(
+      const filename = `walletScan_Certificate_${certificateProps.certificateId.replace(
         "CP-",
         ""
       )}.pdf`;
-      link.click();
-      URL.revokeObjectURL(url);
-      toast.success("PDF downloaded successfully!", { id: "pdf-download" });
+
+      // Check if user is in an in-app browser
+      if (isInAppBrowser()) {
+        setPendingPdfUrl(url);
+        setShowInAppModal(true);
+        toast.dismiss("pdf-download");
+        toast.info(`Download ready! Please use external browser.`, {
+          duration: 3000,
+        });
+      } else {
+        // Normal download for regular browsers
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = filename;
+        link.click();
+        URL.revokeObjectURL(url);
+        toast.success("PDF downloaded successfully!", { id: "pdf-download" });
+      }
     } catch (error) {
       toast.error("Failed to generate PDF. Please try again.", {
         id: "pdf-download",
@@ -260,7 +277,17 @@ export default function App() {
 
   // Auto-download PDF after state has fully updated
   useEffect(() => {
-    if(!certId) return
+    if (!certId) return;
+    
+    // Skip auto-download for in-app browsers
+    if (isInAppBrowser()) {
+      toast.info(
+        `Certificate ready! Click "Download" below to get your PDF.`,
+        { duration: 4000 }
+      );
+      return;
+    }
+    
     toast.info("Starting automatic download...", { duration: 2000 });
     handleExport();
   }, [certId]);
@@ -351,6 +378,14 @@ export default function App() {
           </div>
         </div>
       )}
+
+      {/* In-App Browser Download Modal */}
+      <InAppBrowserModal
+        isOpen={showInAppModal}
+        onClose={() => setShowInAppModal(false)}
+        pdfUrl={pendingPdfUrl}
+        walletName={getWalletBrowserName()}
+      />
 
       <footer
         className={`relative border-t border-glass mt-16 sm:mt-20 backdrop-blur-xl bg-glass ${
