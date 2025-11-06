@@ -144,7 +144,9 @@ export default function App() {
 
       // Check if user is in an in-app browser
       if (isInAppBrowser()) {
-        setPendingPdfUrl(url);
+        // Use download page URL instead of blob URL
+        const downloadUrl = `${window.location.origin}/download/${certificateProps.certificateId}`;
+        setPendingPdfUrl(downloadUrl);
         setShowInAppModal(true);
         toast.dismiss("pdf-download");
         toast.info(`Download ready! Please use external browser.`, {
