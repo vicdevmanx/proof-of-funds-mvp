@@ -5,7 +5,7 @@ import { useParams } from "next/navigation";
 import PDFCertificate from "@/components/PDFcertificate";
 import { pdf } from "@react-pdf/renderer";
 import QRCode from "qrcode";
-import { Download, Loader2 } from "lucide-react";
+import { Check, Download, Loader2 } from "lucide-react";
 
 export default function DownloadPage() {
   const params = useParams();
@@ -123,9 +123,11 @@ export default function DownloadPage() {
           </>
         ) : (
           <>
-            <div className="w-20 h-20 bg-green-500/20 rounded-2xl flex items-center justify-center mx-auto">
-              <span className="text-4xl">✅</span>
-            </div>
+          
+                <div className="w-20 h-20 sm:w-24 sm:h-24 bg-linear-to-br from-green-500 to-emerald-600 rounded-full mx-auto flex items-center justify-center shadow-lg shadow-green-500/50 animate-in zoom-in duration-500">
+            <Check className="w-10 h-10 sm:w-12 sm:h-12 text-white" />
+          </div>
+         
             <div className="space-y-2">
               <h1 className="text-2xl font-bold text-theme">
                 Download Complete!

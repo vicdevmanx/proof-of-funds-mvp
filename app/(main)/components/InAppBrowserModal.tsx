@@ -86,11 +86,11 @@ export function InAppBrowserModal({
             {/* Copy Link Button */}
             <button
               onClick={handleCopyLink}
-              className="w-full py-3 px-4 rounded-xl bg-glass border border-glass hover:bg-glass/80 font-semibold text-theme transition-all hover:scale-[1.02] flex items-center justify-center gap-2"
+              className="w-full py-3 px-4 rounded-xl bg-gradient-primary border border-glass hover:bg-glass/80 font-semibold text-theme transition-all hover:scale-[1.02] flex items-center justify-center gap-2"
             >
               {copied ? (
                 <>
-                  <Check className="w-5 h-5 text-green-500" />
+                  <Check className="w-5 h-5 text-white" />
                   <span>Link Copied!</span>
                 </>
               ) : (
